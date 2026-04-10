@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JS 的作业  有点难</title>
+    <style>
+        body {
+            font-family: 楷体;
+            text-align: center;
+            margin-top: 80px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript</h1>
+    <button onclick="test1()">比较两个数最大值</button>
+    <button onclick="test2()">存款消费提示</button>
+    <button onclick="test3()">数字转星期</button>
+
+    <script>
+        // 1. 比较两个数最大值
+        function test1() {
+            let num1 = Number(prompt("请输入第一个数："));
+            let num2 = Number(prompt("请输入第二个数："));
+            let max = num1 > num2 ? num1 : num2;
+            alert("最大值是：" + max);
+        }
+
+        // 2. 存款余额消费提示
+        function test2() {
+            let balance = Number(prompt("请输入当前存款余额："));
+            let food = Number(prompt("请输入饮食消费："));
+            let entertainment = Number(prompt("请输入娱乐消费："));
+            let life = Number(prompt("请输入生活必需品消费："));
+
+            let total = food + entertainment + life;
+            let remain = balance - total;
+            let percent = (remain / balance) * 100;
+
+            if (percent >= 70) {
+                alert("您的余额非常充足");
+            } else if (percent >= 50) {
+                alert("您当前支出已过半");
+            } else if (percent < 30) {
+                alert("您当前支出幅度较大，余额为：" + remain);
+            } else {
+                alert("请输入正确数值");
+            }
+        }
+
+        // 3. 数字转星期
+        function test3() {
+            let num = Number(prompt("请输入1~7之间的数字："));
+            let week;
+            switch (num) {
+                case 1: week = "星期一"; break;
+                case 2: week = "星期二"; break;
+                case 3: week = "星期三"; break;
+                case 4: week = "星期四"; break;
+                case 5: week = "星期五"; break;
+                case 6: week = "星期六"; break;
+                case 7: week = "星期日"; break;
+                default: week = "输入无效，请输入1-7";
+            }
+            alert(week);
+        }
+    </script>
+</body>
+</html>

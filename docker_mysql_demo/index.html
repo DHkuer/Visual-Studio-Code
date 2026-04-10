@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>用户管理系统</title>
+  <!-- 直接用CDN引入Vue3和Axios，不用安装任何环境！ -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft Yahei", sans-serif;
+    }
+    body {
+      background: #f5f7fa;
+      padding: 30px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    .add-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 14px;
+      color: #666;
+    }
+    .add-card input {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 160px;
+      font-size: 14px;
+    }
+    .add-btn {
+      padding: 10px 24px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .add-btn:hover {
+      background: #2980b9;
+    }
+    .list-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #333;
+    }
+    .del-btn {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    .del-btn:hover {
+      background: #c0392b;
+    }
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="container">
+    <h1>用户管理系统</h1>
+
+    <!-- 添加用户表单 -->
+    <div class="add-card">
+      <div class="form-group">
+        <label>姓名</label>
+        <input v-model="newUser.name" placeholder="请输入姓名" required>
+      </div>
+      <div class="form-group">
+        <label>年龄</label>
+        <input v-model.number="newUser.age" type="number" placeholder="请输入年龄" required>
+      </div>
+      <div class="form-group">
+        <label>邮箱</label>
+        <input v-model="newUser.email" placeholder="请输入邮箱">
+      </div>
+      <div class="form-group">
+        <label>电话</label>
+        <input v-model="newUser.phone" placeholder="请输入电话">
+      </div>
+      <div class="form-group">
+        <label>住址</label>
+        <input v-model="newUser.address" placeholder="请输入住址">
+      </div>
+      <button class="add-btn" @click="addUser">添加用户</button>
+    </div>
+
+    <!-- 用户列表 -->
+    <div class="list-card">
+      <div v-if="loading" class="loading">加载中...</div>
+      <table v-else>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>邮箱</th>
+            <th>电话</th>
+            <th>住址</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.age }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.address }}</td>
+            <td>{{ formatTime(user.create_time) }}</td>
+            <td>
+              <button class="del-btn" @click="deleteUser(user.id)">删除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          users: [],
+          loading: true,
+          newUser: {
+            name: "",
+            age: "",
+            email: "",
+            phone: "",
+            address: ""
+          }
+        };
+      },
+      mounted() {
+        this.getUsers();
+      },
+      methods: {
+        // 格式化时间
+        formatTime(timeStr) {
+          if (!timeStr) return "-";
+          const date = new Date(timeStr);
+          return date.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        },
+        // 获取用户列表
+        async getUsers() {
+          this.loading = true;
+          try {
+            const res = await axios.get("http://47.238.70.31:5000/api/users");
+            this.users = res.data;
+          } catch (err) {
+            console.error("获取用户失败:", err);
+            alert("获取用户数据失败，请检查网络");
+          } finally {
+            this.loading = false;
+          }
+        },
+        // 添加用户
+        async addUser() {
+          if (!this.newUser.name || !this.newUser.age) {
+            alert("姓名和年龄为必填项！");
+            return;
+          }
+          try {
+            await axios.post("http://47.238.70.31:5000/api/users", this.newUser);
+            this.getUsers();
+            // 清空表单
+            this.newUser = { name: "", age: "", email: "", phone: "", address: "" };
+            alert("用户添加成功！");
+          } catch (err) {
+            console.error("添加用户失败:", err);
+            alert("添加用户失败，请检查控制台");
+          }
+        },
+        // 删除用户
+        async deleteUser(id) {
+          if (!confirm("确定要删除该用户吗？此操作不可恢复！")) return;
+          try {
+            await axios.delete(`http://47.238.70.31:5000/api/users/${id}`);
+            this.getUsers();
+            alert("用户删除成功！");
+          } catch (err) {
+            console.error("删除用户失败:", err);
+            alert("删除用户失败，请检查控制台");
+          }
+        }
+      }
+    }).mount("#app");
+  </script>
+</body>
+</html>

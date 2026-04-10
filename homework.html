@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+     let benjin = 1000;//本金
+     let  lixi = 0.03;//利息
+     let  money = benjin;//
+     let yue = 0;
+     
+     while(money < benjin * 2){
+        money = money * 1(1+lixi);
+        yue++;
+     }
+
+     //转成年
+     let nian = Math.floor(yue / 12);
+     let yueshengyu = yue%12;
+
+     console.log("需要" + yue + "个月，即" + nian + "年零"+ yueshengyu + "个月，本金翻倍");
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1. 创建一个存储舍友姓名的数组
+var roommates = ['张三', '李四', '王五'];
+
+// 2. 使用 for 循环遍历数组
+for (var i = 0; i < roommates.length; i++) {
+    console.log(roommates[i]); // 依次输出每个元素
+}
+//第二题：
+// 1. 创建一个存储舍友年龄的数组
+var ages = [20, 21, 19];
+
+// 2. 假设第一个元素为最大值
+var maxAge = ages[0];
+
+// 3. 遍历数组，从第二个元素开始比较
+for (var i = 1; i < ages.length; i++) {
+    if (ages[i] > maxAge) {
+        maxAge = ages[i]; // 如果找到更大的值，则更新 maxAge
+    }
+}
+
+// 4. 将最大值输出到控制台
+console.log('最大年龄是：' + maxAge);
+
+//第三题：
+// 2. 使用 push() 方法在数组末尾添加新元素“小明”
+roommates.push('小明');
+
+// 3. 再次遍历输出数组
+for (var i = 0; i < roommates.length; i++) {
+    console.log(roommates[i]);
+}
+
+//第四题：
+// 1. 创建一个二维数组
+// 外层数组元素代表每个舍友，内层数组代表该舍友的3门科目成绩
+var scores = [
+    [85, 90, 78], // 第一个舍友的成绩
+    [92, 88, 95], // 第二个舍友的成绩
+    [79, 85, 82]  // 第三个舍友的成绩
+];
+
+// 2. 获取第2个舍友的第3门成绩
+// 注意：数组索引从0开始计数。因此，“第2个舍友”的索引是1，“第3门成绩”的索引是2。
+var targetScore = scores[1][2];
+
+// 3. 将获取的成绩输出到控制台
+console.log('第2个舍友的第3门成绩是：' + targetScore);
+    </script>
+</body>
+</html>
